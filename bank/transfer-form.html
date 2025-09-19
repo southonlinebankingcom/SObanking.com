@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Fund Transfer Form</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #eef3f7;
+        margin: 0;
+        padding: 0;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 40px auto;
+        background: #fff;
+        padding: 30px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        border-radius: 10px;
+      }
+
+      h2 {
+        text-align: center;
+        color: #0077b6;
+        margin-bottom: 30px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: bold;
+        color: #333;
+      }
+
+      input, select, textarea {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 16px;
+      }
+
+      textarea {
+        resize: vertical;
+      }
+
+      button {
+        background-color: #0077b6;
+        color: white;
+        padding: 12px 18px;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #023e8a;
+      }
+
+      .status-message {
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 6px;
+        font-weight: bold;
+        text-align: center;
+        display: none;
+      }
+
+      .success {
+        background-color: #d4edda;
+        color: #155724;
+      }
+
+      .pending {
+        background-color: #fff3cd;
+        color: #856404;
+      }
+
+      .admin-approval {
+        background-color: #e2e3e5;
+        color: #383d41;
+        margin-top: 15px;
+        font-weight: normal;
+      }
+
+      .status-buttons {
+        margin-top: 15px;
+        text-align: center;
+      }
+
+      .status-buttons a, 
+      .status-buttons button {
+        margin: 5px;
+        padding: 10px 15px;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+        font-size: 15px;
+        text-decoration: none;
+      }
+
+      .status-buttons a {
+        background-color: #0077b6;
+        color: #fff;
+      }
+
+      .status-buttons button {
+        background-color: #6c757d;
+        color: #fff;
+      }
+
+      .status-buttons a:hover { background-color: #023e8a; }
+      .status-buttons button:hover { background-color: #495057; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Transfer Funds</h2>
+      <form id="transferForm">
+        <label for="recipient">Recipient Name:</label>
+        <input type="text" id="recipient" name="recipient" placeholder="Enter recipient name(s)" required />
+
+        <label for="bank">Recipient Bank Name:</label>
+        <input type="text" id="bank" name="bank" placeholder="Enter bank name" required />
+
+        <label for="account-number">Recipient Account Number:</label>
+        <input type="text" id="account-number" name="account-number" placeholder="Enter account number" required />
+
+        <label for="routing-number">Routing Number:</label>
+        <input type="text" id="routing-number" name="routing-number" placeholder="Enter routing-number" required />
+
+        <label for="amount">Amount (USD):</label>
+        <input type="number" id="amount" name="amount" placeholder="Enter amount to send" required />
+
+        <label for="description">Description / Note (optional):</label>
+        <textarea id="description" name="description" rows="3" placeholder="Add note or description (Optional)"></textarea>
+
+        <button type="submit">Initiate Transfer</button>
+      </form>
+
+      <div id="statusMessage" class="status-message"></div>
+    </div>
+
+    <script>
+      document.getElementById("transferForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const statusMessage = document.getElementById("statusMessage");
+
+        // Randomly pick success or pending for demo
+        const isSuccess = Math.random() > 0.5;
+
+        if (isSuccess) {
+          statusMessage.textContent = "✅ Transaction Successful!";
+          statusMessage.className = "status-message success";
+        } else {
+          statusMessage.textContent = "⌛ Transaction Pending...";
+          statusMessage.className = "status-message pending";
+        }
+
+        statusMessage.style.display = "block";
+        document.getElementById("transferForm").style.display = "none";
+
+        // After 2 seconds, show admin approval message with realistic transaction ID
+        setTimeout(() => {
+          const now = new Date();
+          const year = now.getFullYear();
+          const month = String(now.getMonth() + 1).padStart(2, "0");
+          const day = String(now.getDate()).padStart(2, "0");
+          const randomDigits = Math.floor(100000 + Math.random() * 900000);
+          const transactionId = `TXN-${year}${month}${day}-${randomDigits}`;
+
+          statusMessage.innerHTML += `
+            <div class="admin-approval">
+              🔒 This transaction requires admin approval, kindly wait for admin to confirm transaction.<br>
+              <strong>Transaction ID: ${transactionId}</strong>
+            </div>
+            <div class="status-buttons">
+              <a href="dashboard.html">Go Back to Dashboard</a>
+              <button onclick="resetForm()">Initiate Another Transfer</button>
+            </div>
+          `;
+        }, 2000);
+      });
+
+      function resetForm() {
+        document.getElementById("transferForm").reset();
+        document.getElementById("transferForm").style.display = "block";
+        document.getElementById("statusMessage").style.display = "none";
+      }
+    </script>
+  </body>
+</html>

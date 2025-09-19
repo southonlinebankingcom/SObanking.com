@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>South Bank</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+    body { background: #f4f4fc; color: #111; }
+
+    .top-bar {
+      display: flex; justify-content: space-between; align-items: center;
+      background: #1e4d3a; color: white; padding: 10px 20px;
+    }
+    .top-bar select { padding: 5px; border: none; border-radius: 4px; }
+    .top-bar .right a { color: white; margin-left: 20px; text-decoration: none; }
+
+    .profile-header {
+      display: flex; align-items: center; gap: 15px;
+      padding: 20px; background: white; margin: 20px;
+      border-radius: 10px; box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    .profile-header img { width: 70px; height: 70px; border-radius: 50%; }
+
+    .balance-card {
+      background: #4324c0; color: white; padding: 30px;
+      display: flex; justify-content: space-between;
+      border-radius: 10px; margin: 20px; flex-wrap: wrap;
+    }
+    .balance-card h1 { font-size: 2.2em; margin: 10px 0; }
+    .account-number { text-align: right; }
+
+    .action-buttons {
+      text-align: center; margin: 30px 0;
+      display: flex; flex-wrap: wrap;
+      justify-content: center; gap: 10px;
+    }
+    .action-buttons a {
+      background: #1e4d3a; color: white; padding: 12px 25px;
+      text-decoration: none; border-radius: 6px;
+      font-weight: bold;
+    }
+
+    .transactions-title {
+      margin: 30px 20px 10px; font-weight: bold; font-size: 20px;
+    }
+    .transactions-note {
+      margin: 10px 20px;
+      font-size: 14px;
+      color: #555;
+      font-style: italic;
+    }
+
+    table {
+      width: calc(100% - 40px); margin: 0 auto;
+      border-collapse: collapse; background: white;
+      border-radius: 10px; overflow: hidden;
+    }
+    thead { background: #ddd; }
+    th, td {
+      padding: 10px; text-align: center; font-size: 14px;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .load-more {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      background: #1e4d3a;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .end-message {
+      text-align: center;
+      font-size: 13px;
+      color: #444;
+      margin: 15px 0;
+      display: none;
+    }
+
+    footer {
+      margin-top: 50px;
+      padding: 20px;
+      text-align: center;
+      background: #002d72;
+      color: white;
+      font-size: 12px;
+    }
+
+    @media screen and (max-width: 768px) {
+      .balance-card { flex-direction: column; gap: 15px; }
+      .account-number { text-align: left; }
+      .action-buttons { flex-direction: column; }
+    }
+  </style>
+  <script>
+    window.onload = function() {
+      const loggedIn = sessionStorage.getItem("loggedIn");
+      if (!loggedIn) {
+        window.location.href = "auth/login.html";
+      }
+
+      console.log("Welcome to the dashboard. Session active.");
+
+      const rows = document.querySelectorAll("tbody tr");
+      const loadMoreBtn = document.getElementById("loadMore");
+      const endMessage = document.getElementById("endMessage");
+      let visibleCount = 10;
+
+      function updateVisibility() {
+        rows.forEach((row, idx) => {
+          row.style.display = idx < visibleCount ? "" : "none";
+        });
+        rows.forEach((row, idx) => {
+          const numberCell = row.querySelector("td:first-child");
+          if (numberCell && row.className !== "month-row") {
+            numberCell.textContent = idx < visibleCount ? idx + 1 : "";
+          }
+        });
+        if (visibleCount >= rows.length) {
+          loadMoreBtn.style.display = "none";
+          endMessage.style.display = "block";
+        }
+      }
+      
+      updateVisibility();
+
+      loadMoreBtn.addEventListener("click", () => {
+        visibleCount += 5;
+        updateVisibility();
+      });
+    };
+
+    function logout() {
+      sessionStorage.removeItem("loggedIn");
+      window.location.href = "auth/login.html";
+    }
+  </script>
+</head>
+<body>
+  <header class="top-bar">
+    <select>
+      <option>English (US)</option>
+    </select>
+    <div class="right">
+      <a href="settings.html">Settings</a>
+      <a href="logout.html" onclick="logout()">Logout</a>
+    </div>
+  </header>
+
+  <section class="profile-header">
+    <img src="./auth/profile.jpg" alt="Kayelynn Marie">
+    <div class="details">
+      <h3>Kayelynn Marie Scherzer</h3>
+      <p>9026 Nostrand Ave, Brooklyn, NY 11203</p>
+    </div>
+  </section>
+
+  <section class="balance-card">
+    <div class="balance-info">
+      <p>Checking Balance:</p>
+      <h1>$158,749.35 USD</h1>
+      <p>Account Name<br><strong>Kayelynn Marie Scherzer</strong></p>
+    </div>
+    <div class="account-number">
+      <p>Account Number</p><strong>8787504713</strong><br/>
+      <p>Routing Number</p><strong>101000022</strong>
+    </div>
+  </section>
+
+  <section class="balance-card">
+    <div class="balance-info">
+      <p>Savings Balance:</p>
+      <h1>$1,850,000.00 USD</h1>
+      <p>Account Name<br><strong>Kayelynn Marie Scherzer</strong></p>
+    </div>
+    <div class="account-number">
+      <p>Account Number</p><strong>5400310988</strong><br/>
+      <p>Routing Number</p><strong>749000198</strong>
+    </div>
+  </section>
+
+  <div class="action-buttons">
+    <a href="transfer-form.html">Transfer</a>
+    <a href="receive-form.html">Receive</a>
+    <a href="ach-form.html">ACH</a>
+    <a href="wire-transfer-form.html">Wire Transfer</a>
+    <a href="deposit-form.html">Deposit</a>
+    <a href="withdraw-form.html">Withdraw</a>
+  </div>
+
+  <div class="transactions-title">Transaction History</div>
+  <div class="transactions-note">
+    You can only access up to 1 year of transaction history. For older statements, please contact the bank.
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Date</th>
+        <th>Bank</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Amount (USD)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- September -->
+      <tr><td>1</td><td>2025-09-01</td><td>Netflix</td><td>Subscription Fee</td><td>Debit</td><td>$15.99</td></tr>
+      <tr><td>2</td><td>2025-09-01</td><td>Spotify</td><td>Subscription Fee</td><td>Debit</td><td>$9.99</td></tr>
+      <tr><td>3</td><td>2025-09-01</td><td>Chase Bank</td><td>ATM Withdrawal</td><td>Debit</td><td>$500</td></tr>
+      <tr><td>4</td><td>2025-09-01</td><td>Miami Beach Resort</td><td>Weekend Booking</td><td>Debit</td><td>$2,200</td></tr>
+      <tr><td>5</td><td>2025-09-01</td><td>Amazon</td><td>Shopping Order</td><td>Debit</td><td>$320</td></tr>
+      <tr><td>6</td><td>2025-09-01</td><td>Stripe</td><td>Client Invoice Payment</td><td>Credit</td><td>$5,000</td></tr>
+      <tr><td>7</td><td>2025-09-01</td><td>Online Banking</td><td>Maintenance Fee</td><td>Debit</td><td>$25</td></tr>
+      <tr><td>8</td><td>2025-09-01</td><td>Uber</td><td>Ride Payment</td><td>Debit</td><td>$32</td></tr>
+      <tr><td>9</td><td>2025-09-01</td><td>PayPal</td><td>Client Payment</td><td>Credit</td><td>$1,450</td></tr>
+      <tr><td>10</td><td>2025-09-01</td><td>Apple</td><td>iCloud Subscription</td><td>Debit</td><td>$9.99</td></tr>
+
+      <!-- August 2025 -->
+      <tr><td>11</td><td>2025-08-02</td><td>Stripe</td><td>Free Payment</td><td>Credit</td><td>$2,200</td></tr>
+      <tr><td>12</td><td>2025-08-10</td><td>Netflix</td><td>Subscription Fee</td><td>Debit</td><td>$15.99</td></tr>
+      <tr><td>13</td><td>2025-08-13</td><td>PayPal</td><td>Invoice Payment</td><td>Credit</td><td>$3,200</td></tr>
+      <tr><td>14</td><td>2025-08-15</td><td>Starbucks</td><td>Coffee Order</td><td>Debit</td><td>$12.50</td></tr>
+      <tr><td>15</td><td>2025-08-20</td><td>CashApp</td><td>Rent Payment</td><td>Debit</td><td>$1,800</td></tr>
+      <tr><td>16</td><td>2025-08-23</td><td>Stripe</td><td>Client Project Payment</td><td>Credit</td><td>$4,000</td></tr>
+      <tr><td>17</td><td>2025-08-27</td><td>Online Banking</td><td>Card Annual Fee</td><td>Debit</td><td>$120</td></tr>
+      <tr><td>18</td><td>2025-08-31</td><td>Payoneer</td><td>Salary Payment - John</td><td>Debit</td><td>$4,200</td></tr>
+      <tr><td>19</td><td>2025-08-31</td><td>CashApp</td><td>Salary Payment - Sarah</td><td>Debit</td><td>$3,600</td></tr>
+      <tr><td>20</td><td>2025-08-31</td><td>Venmo</td><td>Salary Payment - Michael</td><td>Debit</td><td>$4,500</td></tr>
+      <tr><td>21</td><td>2025-08-31</td><td>Bank of America</td><td>Salary Payment - Emily</td><td>Debit</td><td>$3,750</td></tr>
+      <tr><td>22</td><td>2025-08-31</td><td>PayPal</td><td>Salary Payment - Wilson</td><td>Debit</td><td>$4,100</td></tr>
+      <tr><td>23</td><td>2025-08-31</td><td>Chase Bank</td><td>Salary Payment - Jessica</td><td>Debit</td><td>$3,950</td></tr>
+
+      <!-- July 2025 -->
+      <tr><td>24</td><td>2025-07-01</td><td>Payoneer</td><td>Freelance Payment</td><td>Credit</td><td>2,500</td></tr>
+      <tr><td>25</td><td>2025-07-02</td><td>CashApp</td><td>Anonymous - Happy Bday Miss Kenzie - Die Hard fan</td><td>Credit</td><td>5,000</td></tr>
+      <tr><td>26</td><td>2025-07-02</td><td>PayPal</td><td>Benny - Happy Bday</td><td>Credit</td><td>500</td></tr>
+      <tr><td>27</td><td>2025-07-02</td><td>CashApp</td><td>Anonymous - Bday Gift</td><td>Credit</td><td>3,000</td></tr>
+      <tr><td>28</td><td>2025-07-08</td><td>Netflix</td><td>Subscription Fee</td><td>Debit</td><td>15.99</td></tr>
+      <tr><td>29</td><td>2025-07-09</td><td>Spotify</td><td>Subscription Fee</td><td>Debit</td><td>9.99</td></tr>
+      <tr><td>30</td><td>2025-07-10</td><td>Chase Bank</td><td>ATM Withdrawal</td><td>Debit</td><td>400</td></tr>
+      <tr><td>31</td><td>2025-07-12</td><td>Hawaii Resort</td><td>Vacation Booking</td><td>Debit</td><td>2,500</td></tr>
+      <tr><td>32</td><td>2025-07-15</td><td>Amazon</td><td>Shopping Order</td><td>Debit</td><td>450</td></tr>
+      <tr><td>33</td><td>2025-07-18</td><td>Payoneer</td><td>Client Invoice Payment</td><td>Credit</td><td>4,500</td></tr>
+      <tr><td>34</td><td>2025-07-20</td><td>Bank of America</td><td>Maintenance Fee</td><td>Debit</td><td>25</td></tr>
+      <tr><td>35</td><td>2025-07-22</td><td>Uber</td><td>Ride Payment</td><td>Debit</td><td>28</td></tr>
+      <tr><td>36</td><td>2025-07-25</td><td>Stripe</td><td>Client Payment</td><td>Credit</td><td>1,300</td></tr>
+      <tr><td>37</td><td>2025-07-28</td><td>Apple</td><td>iCloud Subscription</td><td>Debit</td><td>9.99</td></tr>
+      <tr><td>38</td><td>2025-07-30</td><td>Starbucks</td><td>Coffee Order</td><td>Debit</td><td>10.75</td></tr>
+      <tr><td>39</td><td>2025-07-31</td><td>PayPal</td><td>Invoice Payment</td><td>Credit</td><td>2,800</td></tr>
+      <tr><td>40</td><td>2025-07-31</td><td>Online Banking</td><td>Card Annual Fee</td><td>Debit</td><td>120</td></tr>
+      <tr><td>41</td><td>2025-07-31</td><td>CashApp</td><td>Anonymous</td><td>Credit</td><td>3,000</td></tr>
+      <tr><td>42</td><td>2025-07-31</td><td>Bank Of America</td><td>Shopping - Victoria's Secret</td><td>Debit</td><td>3000</td></tr>
+      <tr><td>43</td><td>2025-07-31</td><td>Online Banking</td><td>Maintanance Fee</td><td>Debit</td><td>15</td></tr>
+      <tr><td>44</td><td>2025-07-31</td><td>CashApp</td><td>Club - Service</td><td>Credit</td><td>30,000</td></tr>
+      <tr><td>45</td><td>2025-07-31</td><td>CashApp</td><td>Salary Payment - John Miller</td><td>Debit</td><td>4,000</td></tr>
+      <tr><td>46</td><td>2025-07-31</td><td>Venmo</td><td>Salary Payment - Sarah</td><td>Debit</td><td>3,500</td></tr>
+      <tr><td>47</td><td>2025-07-31</td><td>Bank of America</td><td>Salary Payment - Michael</td><td>Debit</td><td>4,800</td></tr>
+      <tr><td>48</td><td>2025-07-31</td><td>PayPal</td><td>Salary Payment - Emily</td><td>Debit</td><td>3,600</td></tr>
+      <tr><td>49</td><td>2025-07-31</td><td>Chase Bank</td><td>Salary Payment - Wilson</td><td>Debit</td><td>4,300</td></tr>
+      <tr><td>50</td><td>2025-07-31</td><td>Stripe</td><td>Salary Payment - Jessica</td><td>Debit</td><td>3,850</td></tr>
+      
+      </table>
+      <button id="loadMore" class="load-more">Load More</button>
+      <div id="endMessage" class="end-message">
+        Contact customer support to access older transaction history and account statement for specific dates.
+      </div>
+
+      <footer>
+        &copy; 2025 South International Bank.| All rights reserved. | Privacy Policy | Terms of Use
+      </footer>
+    </body>
+</html>
